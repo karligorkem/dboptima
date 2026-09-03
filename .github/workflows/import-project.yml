@@ -1,0 +1,77 @@
+name: Import uploaded project ZIP
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  import-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Import project files from ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ZIP="dboptima_small.zip"
+
+          if [ ! -f "$ZIP" ]; then
+            echo "No project ZIP found. Nothing to import."
+            exit 0
+          fi
+
+          rm -rf .import_tmp
+          mkdir -p .import_tmp
+          unzip -q "$ZIP" -d .import_tmp
+
+          SOURCE=".import_tmp"
+          TOP_COUNT=$(find .import_tmp -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')
+          if [ "$TOP_COUNT" = "1" ]; then
+            ONLY=$(find .import_tmp -mindepth 1 -maxdepth 1 | head -n 1)
+            if [ -d "$ONLY" ]; then
+              SOURCE="$ONLY"
+            fi
+          fi
+
+          rsync -a "$SOURCE"/ ./ \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            --exclude='.venv/' \
+            --exclude='venv/' \
+            --exclude='node_modules/' \
+            --exclude='.next/' \
+            --exclude='__pycache__/' \
+            --exclude='.pytest_cache/' \
+            --exclude='*.pyc' \
+            --exclude='README.md' \
+            --exclude='README_TR.md' \
+            --exclude='.gitignore' \
+            --exclude='dboptima_small.zip'
+
+          rm -rf .import_tmp
+          rm -f "$ZIP"
+
+      - name: Commit imported project
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Import DBOptima project files"
+          git push
