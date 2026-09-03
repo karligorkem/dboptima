@@ -1,0 +1,46 @@
+{
+    "model_name": "hist_gradient_boosting",
+    "sample_count": 254,
+    "unique_query_families": 10,
+    "feature_columns": [
+        "total_calls",
+        "latency_sample_count",
+        "avg_latency_ms",
+        "min_latency_ms",
+        "max_latency_ms",
+        "p95_latency_ms",
+        "plan_total_cost",
+        "plan_rows",
+        "filter_column_count",
+        "index_column_count",
+        "benchmark_before_ms",
+        "benchmark_stability",
+        "historical_success_rate",
+        "historical_avg_improvement",
+        "historical_avg_confidence"
+    ],
+    "target": "improvement_percent",
+    "group_column": "query_id",
+    "group_split": true,
+    "train_query_families": 8,
+    "test_query_families": 2,
+    "query_family_overlap": 0,
+    "thresholds": {
+        "recommended": 20.0,
+        "review": 5.0
+    },
+    "test_results": {
+        "random_forest": {
+            "mae": 14.8777,
+            "rmse": 23.6509,
+            "r2": 0.4274,
+            "status_accuracy": 0.7857
+        },
+        "hist_gradient_boosting": {
+            "mae": 12.3091,
+            "rmse": 18.5203,
+            "r2": 0.6489,
+            "status_accuracy": 0.7619
+        }
+    }
+}

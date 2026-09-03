@@ -1,0 +1,44 @@
+services:
+  metadata-db:
+    image: postgres:17
+    container_name: dboptima-metadata-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: dboptima
+      POSTGRES_USER: dboptima
+      POSTGRES_PASSWORD: dboptima_dev_password
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - dboptima_metadata_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dboptima -d dboptima"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  target-db:
+    image: postgres:17
+    container_name: dboptima-target-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: shopdb
+      POSTGRES_USER: optimizer_reader
+      POSTGRES_PASSWORD: optimizer_test_password
+
+    ports:
+      - "5434:5432"
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U optimizer_reader -d shopdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  dboptima_metadata_data:

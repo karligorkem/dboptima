@@ -1,0 +1,39 @@
+{
+    "model_name": "RandomForestRegressor",
+    "model_role": "candidate_ranking",
+    "sample_count": 574,
+    "query_family_count": 33,
+    "target": "improvement_percent",
+    "features": [
+        "total_calls",
+        "latency_sample_count",
+        "avg_latency_ms",
+        "min_latency_ms",
+        "max_latency_ms",
+        "p95_latency_ms",
+        "plan_total_cost",
+        "plan_rows",
+        "filter_column_count",
+        "index_column_count",
+        "historical_success_rate",
+        "historical_avg_improvement"
+    ],
+    "thresholds": {
+        "recommended": 20.0,
+        "review": 5.0
+    },
+    "evaluation": {
+        "method": "5-fold GroupKFold by query_id",
+        "mae_mean": 13.6286,
+        "mae_std": 1.8527,
+        "rmse_mean": 20.7764,
+        "rmse_std": 2.0239,
+        "r2_mean": 0.7323,
+        "r2_std": 0.1222,
+        "accuracy_mean": 0.7131,
+        "accuracy_std": 0.1367,
+        "balanced_accuracy_mean": 0.658,
+        "balanced_accuracy_std": 0.0754
+    },
+    "trained_at": "2026-09-02T10:26:41.207032+00:00"
+}

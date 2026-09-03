@@ -1,0 +1,57 @@
+{
+  "version": "v2-final",
+  "feature_columns": [
+    "total_calls",
+    "latency_sample_count",
+    "avg_latency_ms",
+    "min_latency_ms",
+    "max_latency_ms",
+    "p95_latency_ms",
+    "plan_total_cost",
+    "plan_rows",
+    "seq_scan_count",
+    "actual_rows",
+    "rows_removed_by_filter",
+    "actual_total_time_ms",
+    "actual_loops",
+    "scan_selectivity_ratio",
+    "removed_to_returned_ratio",
+    "equality_filter_count",
+    "range_filter_count",
+    "like_filter_count",
+    "has_order_by",
+    "has_limit",
+    "candidate_column_count",
+    "candidate_has_order_column",
+    "source_actual_rows",
+    "source_rows_removed_by_filter",
+    "historical_success_rate",
+    "historical_avg_improvement"
+  ],
+  "target_column": "improvement_percent",
+  "thresholds": {
+    "recommended": 20.0,
+    "review": 5.0
+  },
+  "training_samples": 340,
+  "query_groups": 51,
+  "model_type": "RandomForestRegressor",
+  "model_parameters": {
+    "n_estimators": 600,
+    "min_samples_leaf": 2,
+    "random_state": 42
+  },
+  "evaluation_reference": {
+    "paired_samples": 340,
+    "paired_query_groups": 51,
+    "overall_mae": 10.5133,
+    "overall_rmse": 16.9843,
+    "overall_r2": 0.8431,
+    "overall_status_accuracy": 78.82,
+    "cold_start_samples": 51,
+    "cold_start_mae": 16.1311,
+    "cold_start_rmse": 22.5148,
+    "cold_start_r2": 0.7425,
+    "cold_start_status_accuracy": 70.59
+  }
+}
