@@ -29,7 +29,32 @@ jobs:
 
           rm -rf .import_tmp
           mkdir -p .import_tmp
-          unzip -q "$ZIP" -d .import_tmp
+
+          python - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+
+          zip_path = Path("dboptima_small.zip")
+          out_root = Path(".import_tmp")
+
+          with ZipFile(zip_path) as zf:
+              for info in zf.infolist():
+                  normalized = info.filename.replace("\\", "/")
+                  parts = [p for p in PurePosixPath(normalized).parts if p not in ("", ".")]
+
+                  if not parts or ".." in parts:
+                      continue
+
+                  target = out_root.joinpath(*parts)
+
+                  if info.is_dir() or normalized.endswith("/"):
+                      target.mkdir(parents=True, exist_ok=True)
+                      continue
+
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  with zf.open(info) as src, target.open("wb") as dst:
+                      dst.write(src.read())
+          PY
 
           SOURCE=".import_tmp"
           TOP_COUNT=$(find .import_tmp -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')
